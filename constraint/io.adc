@@ -1,0 +1,7 @@
+set_pin_assignment {clk} { LOCATION = K14; }		##24MHZ
+set_pin_assignment {reset} { LOCATION = K16; }		##USER_KEY
+
+## RGB LEDs, 3 pins
+set_pin_assignment {tx} { LOCATION = H13;  }
+set_pin_assignment {rx} { LOCATION = J13;  }
+
