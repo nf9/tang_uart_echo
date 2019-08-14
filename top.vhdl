@@ -11,8 +11,12 @@ entity top is
 end entity;
 
 architecture rtl of top is
-	type states is (idle, receiving, processing, transmitting);
-	signal state :states;
+	type rx_states is (idle, receiving, done);
+	signal rx_state : rx_states;
+	
+	type tx_states is (idle, latch_next, latch_output, busy, transmitting, done);
+	signal tx_state : tx_states;
+	
 	signal tx_data_top	:	STD_LOGIC_VECTOR(8-1 DOWNTO 0);
 	signal rx_data_top	:	STD_LOGIC_VECTOR(8-1 DOWNTO 0);
 	signal write_to_fifo : std_logic := '0';
@@ -20,6 +24,10 @@ architecture rtl of top is
 	signal busy_rx : std_logic := '0';
 	signal busy_tx : std_logic := '0';
 	signal ena_tx : std_logic := '0';
+	signal empty_flag : std_logic;
+	signal full_flag : std_logic;
+
+
 
 begin
 
@@ -51,41 +59,72 @@ begin
 			we	=> write_to_fifo,
 			re	=> read_from_fifo,
 			do	=> tx_data_top,
-			empty_flag => open,
-			full_flag => open
+			empty_flag => empty_flag,
+			full_flag => full_flag
 		);
 
-	process(clk, reset, tx, rx) is
+	receive: process(clk, reset, rx) is
 		begin
 			if( reset = '0') then
-				state <= idle;
+				rx_state <= idle;
 			elsif(clk'event and clk = '1') then
-				case state is
+				case rx_state is
 					when idle =>
 						if(busy_rx = '1') then
-							state <= receiving;
+							rx_state <= receiving;
 						else
-							state <= idle;
+							rx_state <= idle;
 						end if;
 					when receiving =>
 						if(busy_rx = '0') then
-							state <= processing;
+							rx_state <= done;
+							write_to_fifo <= '1';
 						else
-							state <= receiving;
+							rx_state <= receiving;
 						end if;
-					when processing =>
-						write_to_fifo <= '1';
-						state <= transmitting;
-					when transmitting =>
-						write_to_fifo <= '0';		
-						read_from_fifo <= '1';
-						ena_tx <= '1';
-						if(busy_tx = '1') then
-							state <= transmitting;
+					when done =>
+					   	write_to_fifo <= '0';
+						rx_state <= idle;
+				end case;
+						
+			end if;
+
+	end process;
+	
+    transmit: process(clk, reset) is
+		begin
+			if( reset = '0') then
+				tx_state <= idle;
+			elsif(clk'event and clk = '1') then
+				case tx_state is
+					when idle =>
+						if(full_flag = '1') then
+						    read_from_fifo <= '1';
+                            tx_state <= latch_output;
 						else
-							state <= idle;
-							ena_tx <= '0';
-							read_from_fifo <= '0';
+							tx_state <= idle;
+						end if;
+					when latch_next =>
+					   	read_from_fifo <= '1';
+					   	tx_state <= latch_output;
+					when latch_output =>
+						read_from_fifo <= '0';
+                        ena_tx <= '1';
+                        tx_state <= busy;
+                    when busy =>
+                        tx_state <= transmitting;                    
+					when transmitting =>
+					    ena_tx <= '0';
+						if(busy_tx = '0') then
+							tx_state <= done;
+						else
+							tx_state <= transmitting;
+						end if;
+					when done =>
+					    if(empty_flag = '0') then
+					        tx_state <= latch_next;
+					    else
+						    tx_state <= idle;
 						end if;
 				end case;
 						
