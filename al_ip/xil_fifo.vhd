@@ -11,8 +11,6 @@
 LIBRARY ieee;
 USE work.ALL;
 	USE ieee.std_logic_1164.all;
-LIBRARY eagle_macro;
-	USE eagle_macro.EAGLE_COMPONENTS.all;
 
 ENTITY al_fifo IS
 PORT (
@@ -31,7 +29,7 @@ END al_fifo;
 ARCHITECTURE struct OF al_fifo IS
 
 	BEGIN
-	inst : EG_LOGIC_FIFO
+	inst : entity work.EG_LOGIC_FIFO
 		GENERIC MAP (
 			DATA_WIDTH_W			=> 8,
 			DATA_DEPTH_W			=> 512,

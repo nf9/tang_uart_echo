@@ -14,7 +14,8 @@
     </DataPortOption>
     <FlagOption>
         <aempty_flag>false</aempty_flag>
-        <afull_flag>false</afull_flag>
+        <afull_flag>true</afull_flag>
+        <aff_threshold>8</aff_threshold>
         <resetmode>ASYNC</resetmode>
         <reset_release>ASYNC</reset_release>
     </FlagOption>

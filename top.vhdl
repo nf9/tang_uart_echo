@@ -6,7 +6,10 @@ entity top is
 		clk : in std_logic;
 		reset: in std_logic;
 		tx: out std_logic;
-		rx: in std_logic
+		rx: in std_logic;
+		rx_led: out std_logic;
+		tx_led: out std_logic;
+		full_led: out std_logic
 		);		
 end entity;
 
@@ -30,6 +33,10 @@ architecture rtl of top is
 
 
 begin
+	tx_led <= not busy_tx;
+	rx_led <= not busy_rx;
+	full_led <= not full_flag;
+
 
 	uart0: entity work.uart
 		generic map(
@@ -37,7 +44,7 @@ begin
 			baud_rate	=> 19_200,		--data link baud rate in bits/second
 			os_rate		=> 16,			--oversampling rate to find center of receive bits (in samples per baud period)
 			d_width		=> 8, 			--data bus width
-			parity		=> 1,			--0 for no parity, 1 for parity
+			parity		=> 0,			--0 for no parity, 1 for parity
 			parity_eo	=> '0')			--'0' for even, '1' for odd parity
 		port map(
 			clk		=> clk,				--system clock
@@ -54,13 +61,14 @@ begin
 	fifo0: entity work.al_fifo
 		port map (
 			di => rx_data_top, 
-			rst	=> reset,
+			rst	=> not reset,
 			clk	=> clk,
 			we	=> write_to_fifo,
 			re	=> read_from_fifo,
 			do	=> tx_data_top,
 			empty_flag => empty_flag,
-			full_flag => full_flag
+			full_flag => open,
+			afull_flag => full_flag
 		);
 
 	receive: process(clk, reset, rx) is
@@ -85,8 +93,7 @@ begin
 					when done =>
 					   	write_to_fifo <= '0';
 						rx_state <= idle;
-				end case;
-						
+				end case;						
 			end if;
 
 	end process;

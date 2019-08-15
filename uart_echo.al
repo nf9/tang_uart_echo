@@ -2,7 +2,7 @@
 <Project>
     <Project_Created_Time>2019-08-13 11:31:29</Project_Created_Time>
     <TD_Version>4.5.12562</TD_Version>
-    <UCode>00000000</UCode>
+    <UCode>00101011</UCode>
     <Name>uart_echo</Name>
     <HardWare>
         <Family>EG4</Family>
@@ -16,7 +16,7 @@
         </VHDL>
         <ADC_FILE>constraint/io.adc</ADC_FILE>
         <SDC_FILE/>
-        <CWC_FILE/>
+        <CWC_FILE>fifo_watcher.cwc</CWC_FILE>
     </Source_Files>
     <TOP_MODULE>
         <LABEL/>
@@ -24,7 +24,7 @@
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>
-        <Step_Last_Change>2019-08-13 16:13:33</Step_Last_Change>
+        <Step_Last_Change>2019-08-15 15:24:23</Step_Last_Change>
         <Current_Step>60</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>

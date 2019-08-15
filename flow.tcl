@@ -14,3 +14,4 @@ route
 report_area -io_info -file "uart_echo_phy.area"
 export_db "uart_echo_pr.db"
 bitgen -bit "uart_echo.bit" -version 0X00 -g ucode:00000000000000000000000000000000
+download -bit "uart_echo.bit" -mode jtag -spd 7 -sec 64 -cable 0
