@@ -36,7 +36,7 @@ entity EG_LOGIC_FIFO is
 			ADDR_W	: integer	:= 4;					-- address width in bits
 			DATA_W 	: integer	:= 8; 				-- data width in bits
 			BUFF_L	: integer 	:=16;					-- buffer length must be less than address space as in  BUFF_L <or= 2^(ADDR_W)-1
-			ALMST_F	: integer 	:= 3;					-- fifo flag for almost full regs away from empty fifo
+			ALMST_F	: integer 	:= 8;					-- fifo flag for almost full regs away from empty fifo
 			ALMST_E	: integer	:= 3;						-- fifo regs away from empty fifo
 			
 			DATA_WIDTH_W			: integer	:= 8;
@@ -97,7 +97,7 @@ begin
 	process(clkw) 
 	begin
 		if rising_edge(clkw) then
-			if (rst = '0')  then
+			if (rst = '1')  then
 				rd_ptr <= (others => '0');
 				wr_ptr <= (others => '0');
 				full_ff <= '0';
@@ -210,7 +210,7 @@ begin
 	process(clkw)   		
 	begin
 		if rising_edge(clkw) then
-			if( rst = '0') then
+			if( rst = '1') then
 				mem_array <= (others => (others => '0'));  			-- reset memory array
 				err <= '0';
 			else

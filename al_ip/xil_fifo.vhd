@@ -22,6 +22,7 @@ PORT (
 	re	: IN STD_LOGIC;
 	do	: OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
 	empty_flag		: OUT STD_LOGIC;
+	afull_flag		: OUT STD_LOGIC;
 	full_flag		: OUT STD_LOGIC
 	);
 END al_fifo;
@@ -56,7 +57,7 @@ ARCHITECTURE struct OF al_fifo IS
 			empty_flag	=> empty_flag,
 			aempty_flag	=> OPEN,
 			full_flag	=> full_flag,
-			afull_flag	=> OPEN
+			afull_flag	=> afull_flag
 		);
 
 END struct;

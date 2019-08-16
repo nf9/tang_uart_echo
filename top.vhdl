@@ -29,6 +29,8 @@ architecture rtl of top is
 	signal ena_tx : std_logic := '0';
 	signal empty_flag : std_logic;
 	signal full_flag : std_logic;
+	signal not_reset : std_logic;
+
 
 
 
@@ -36,7 +38,7 @@ begin
 	tx_led <= not busy_tx;
 	rx_led <= not busy_rx;
 	full_led <= not full_flag;
-
+    not_reset <= not reset;
 
 	uart0: entity work.uart
 		generic map(
@@ -61,7 +63,7 @@ begin
 	fifo0: entity work.al_fifo
 		port map (
 			di => rx_data_top, 
-			rst	=> not reset,
+			rst	=> not_reset,
 			clk	=> clk,
 			we	=> write_to_fifo,
 			re	=> read_from_fifo,
